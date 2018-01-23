@@ -173,6 +173,7 @@ static int aes_verifyMic0 (xref2u1_t pdu, int len) {
 
 static void aes_encrypt (xref2u1_t pdu, int len) {
     os_getDevKey(AESkey);
+    os_clearMem(pdu + len, MAX_LEN_FRAME - len);
     os_aes(AES_ENC, pdu, len);
 }
 
@@ -850,6 +851,7 @@ static void _nextTx (void) {
         LMIC.chRnd = os_getRndU1() & 0x3F;
     if( LMIC.datarate >= DR_SF8C ) { // 500kHz
         u1_t map = LMIC.channelMap[64/16]&0xFF;
+        lmic_printf("500kHz\n");
         for( u1_t i=0; i<8; i++ ) {
             if( (map & (1<<(++LMIC.chRnd & 7))) != 0 ) {
                 LMIC.txChnl = 64 + (LMIC.chRnd & 7);
@@ -859,6 +861,8 @@ static void _nextTx (void) {
     } else { // 125kHz
         for( u1_t i=0; i<64; i++ ) {
             u1_t chnl = ++LMIC.chRnd & 0x3F;
+            lmic_printf("125kHz\n");
+            lmic_printf("Si LMIC.channelMac[%d] & %02x entonces uso el canal %d\n", chnl >> 4, 1 << (chnl & 0xF), chnl);
             if( (LMIC.channelMap[(chnl >> 4)] & (1<<(chnl & 0xF))) != 0 ) {
                 LMIC.txChnl = chnl;
                 return;
@@ -902,10 +906,11 @@ static ostime_t nextJoinState (void) {
     //
     u1_t failed = 0;
     if( LMIC.datarate != DR_SF8C ) {
-        LMIC.txChnl = 64+(LMIC.txChnl&7);
+        // FIXME
+        LMIC.txChnl = 64;
         setDrJoin(DRCHG_SET, DR_SF8C);
     } else {
-        LMIC.txChnl = os_getRndU1() & 0x3F;
+        LMIC.txChnl = (os_getRndU1() & 0x3F) % 8;
         s1_t dr = DR_SF7 - ++LMIC.txCnt;
         if( dr < DR_SF10 ) {
             dr = DR_SF10;
