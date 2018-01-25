@@ -131,6 +131,7 @@ u4_t os_aes (u1_t mode, xref2u1_t buf, u2_t len) {
 
         case AES_ENC:
             // TODO: Check / handle when len is not a multiple of 16
+            lmic_printf("len de AES_ENC %d\n", len);
             for (u1_t i = 0; i < len; i += 16)
                 lmic_aes_encrypt(buf+i, AESkey);
             break;
