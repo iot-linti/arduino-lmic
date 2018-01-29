@@ -559,6 +559,9 @@ scan_mac_cmds(
     ) {
     int oidx = 0;
     while( oidx < olen ) {
+#if LMIC_DEBUG_LEVEL > 0
+        LMIC_DEBUG_PRINTF(">>>>>>>>>>>>>>>> MCMD: 0x%02x <<<<<<<<<<<<<<<<<<\n", opts[oidx]);
+#endif
         switch( opts[oidx] ) {
         case MCMD_LCHK_ANS: {
             //int gwmargin = opts[oidx+1];
@@ -567,6 +570,10 @@ scan_mac_cmds(
             continue;
         }
         case MCMD_LADR_REQ: {
+#ifdef LMIC_IGNORE_MCMD_LADR_REQ
+            oidx += 5;
+            continue;
+#endif
             u1_t p1     = opts[oidx+1];            // txpow + DR
             u2_t chmap  = os_rlsbf2(&opts[oidx+2]);// list of enabled channels
             u1_t chpage = opts[oidx+4] & MCMD_LADR_CHPAGE_MASK;     // channel page
