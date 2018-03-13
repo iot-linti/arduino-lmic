@@ -185,7 +185,7 @@ void LMICuslike_initJoinLoop(void) {
         // make sure the datarate is set to DR0 per LoRaWAN regional reqts V1.0.2,
         // section 2.2.2
         // TODO(tmm@mcci.com): parameterize this for US-like
-        LMICcore_setDrJoin(DRCHG_SET, LORAWAN_DR0);
+        LMICcore_setDrJoin(DRCHG_SET, LORAWAN_DR2);
 
         // TODO(tmm@mcci.com) need to implement the transmit randomization and
         // duty cycle restrictions from LoRaWAN V1.0.2 section 7.
@@ -204,17 +204,17 @@ ostime_t LMICuslike_nextJoinState(void) {
         //
         u1_t failed = 0;
         // TODO(tmm@mcci.com) parameterize for US-like
-        if (LMIC.datarate != LMICuslike_getFirst500kHzDR()) {
+        if (LMIC.datarate != LORAWAN_DR6) {
                 // assume that 500 kHz equiv of last 125 kHz channel
                 // is also enabled, and use it next.
                 LMIC.txChnl = 64 + (LMIC.txChnl >> 3);
-                LMICcore_setDrJoin(DRCHG_SET, LMICuslike_getFirst500kHzDR());
+                LMICcore_setDrJoin(DRCHG_SET, LORAWAN_DR6);
         }
         else {
                 setNextChannel(0, 64, LMIC.activeChannels125khz);
 
                 // TODO(tmm@mcci.com) parameterize
-                s1_t dr = LORAWAN_DR0;
+                s1_t dr = LORAWAN_DR2;
                 if ((++LMIC.txCnt & 0x7) == 0) {
                         failed = 1; // All DR exhausted - signal failed
                 }
