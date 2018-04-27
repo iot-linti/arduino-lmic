@@ -94,7 +94,7 @@ u1_t LMICuslike_mapChannels(u1_t chpage, u2_t chmap) {
 
 	if (chpage < MCMD_LADR_CHP_USLIKE_SPECIAL) {
 		// operate on channels 0..15, 16..31, 32..47, 48..63
-		base = chpage << 4;
+		base = chpage;
 		top = base + 16;
 		if (base == 64) {
 			if (chmap && 0xFF00) {

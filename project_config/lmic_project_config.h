@@ -10,5 +10,9 @@
 #ifdef ESP8266
 #define LMIC_DEBUG_LEVEL 1
 #endif
+// FIXME
+//#define LMIC_DEBUG_LEVEL 2
+//#define LMIC_PRINTF_TO Serial1
+//#define LMIC_FAILURE_TO Serial1
 
-#define LMIC_IGNORE_MCMD_LADR_REQ
+// #define LMIC_IGNORE_MCMD_LADR_REQ

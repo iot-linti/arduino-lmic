@@ -571,6 +571,13 @@ scan_mac_cmds(
         }
         case MCMD_LADR_REQ: {
 #ifdef LMIC_IGNORE_MCMD_LADR_REQ
+    #ifdef LMIC_DEBUG_LEVEL > 0
+            LMIC_DEBUG_PRINTF("Ignoring LMIC_IGNORE_MCMD_LADR_REQ with params:\n");
+            LMIC_DEBUG_PRINTF("\ttxpow+dr: 0x%02x\n", opts[oidx+1]);
+            LMIC_DEBUG_PRINTF("\tchmap: 0x%02x\n", os_rlsbf2(&opts[oidx+2]));
+            LMIC_DEBUG_PRINTF("\tchpage: 0x%02x\n", opts[oidx+4] & MCMD_LADR_CHPAGE_MASK);
+            LMIC_DEBUG_PRINTF("\tup repeat count: 0x%02x\n", opts[oidx+4] & MCMD_LADR_REPEAT_MASK);
+    #endif
             oidx += 5;
             continue;
 #endif
